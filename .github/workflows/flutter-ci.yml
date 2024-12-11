@@ -1,0 +1,36 @@
+name: Flutter CI
+
+on:
+  push: # 푸시 이벤트 발생 시 실행
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+
+
+    steps:
+      - name: Checkout repository #현재 레포지토리 코드 체크 아웃
+        uses: actions/checkout@v3 #GitHub Actions 기본 제공 체크 아웃 액션 사용
+
+      - name: Set up Flutter #Flutter 환경 설정
+        uses: subosito/flutter-action@v2 # Flutter 설치 액션
+
+      - name: Cache dependencies # 종속성 캐싱
+        uses: actions/cache@v3 # GitHub Actions 기본 제공 캐싱 액션 사용
+        with:
+          path: ~/.pub-cache # 캐싱할 디렉터리 경로 (Flutter 패키지 캐시)
+          key: ${{ runner.os }}-pub-cache # 캐시 키 (운영체제별로 구분)
+          restore-keys: |
+            ${{ runner.os }}-pub-cache # 캐시 복원 키
+
+      - name: Install dependencies
+        run: |
+          flutter pub get # pubspec.yaml에 정의된 패키지 설치
+
+      # 단위 테스트 실행
+      - name: Run unit tests
+        run: |
+          flutter test # test 디렉터리에 있는 모든 단위 테스트 실행
