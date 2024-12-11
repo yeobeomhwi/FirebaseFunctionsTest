@@ -26,6 +26,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-cache # 캐시 복원 키
 
+
+      # 배포때 사용
+      # 4. Firebase CLI 설치
+      - name: Install Firebase CLI
+        run: |
+          curl -sL https://firebase.tools | bash
+
+      #  # 4. Firebase CLI 인증 테스트
+      - name: Verify Firebase Authentication
+        env:
+          FIREBASE_AUTH_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}
+        run: firebase projects:list --token="${{ secrets.FIREBASE_AUTH_TOKEN }}"
+
       - name: Install dependencies
         run: |
           flutter pub get # pubspec.yaml에 정의된 패키지 설치
@@ -34,3 +47,19 @@ jobs:
 #      - name: Run unit tests
 #        run: |
 #          flutter test # test 디렉터리에 있는 모든 단위 테스트 실행
+
+
+      # 배포할때 실행
+      - name: build...
+        run: | 
+          flutter build apk --debug
+
+      # # 9. Firebase App Distribution 배포
+      - name: Deploy to Firebase App Distribution
+        env:
+          FIREBASE_AUTH_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}
+        run: |
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-debug.apk \
+           --app "1:596252682714:android:b30efc1083e130922038e3" \
+           --groups "tester" \
+           --token="${{ secrets.FIREBASE_AUTH_TOKEN }}"
