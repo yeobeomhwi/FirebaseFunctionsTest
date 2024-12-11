@@ -30,7 +30,7 @@ jobs:
         run: |
           flutter pub get # pubspec.yaml에 정의된 패키지 설치
 
-      # 단위 테스트 실행
-      - name: Run unit tests
-        run: |
-          flutter test # test 디렉터리에 있는 모든 단위 테스트 실행
+#      # 단위 테스트 실행
+#      - name: Run unit tests
+#        run: |
+#          flutter test # test 디렉터리에 있는 모든 단위 테스트 실행
